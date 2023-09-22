@@ -18,21 +18,6 @@
 					</td>
 				</tr>
 			</table>
-
-			<div class="text-center">
-				<p>
-					<b>Size:</b>
-					{{ size }} x {{ size }}
-				</p>
-				<p>
-					<b>Speed:</b>
-					{{ Number((1000 / speed).toFixed(2)) }} cells/sec
-				</p>
-				<p>
-					<b>Length snake:</b>
-					{{ length }} cells
-				</p>
-			</div>
 		</div>
 		<div class="panel panel-default" v-else>
 			<div class="panel-body text-center">
@@ -126,7 +111,7 @@ export default {
 	props: {
 		size: {
 			type: Number,
-			default: 10,
+			default: 15,
 			validator: value => {
 				return value >= 10 && value <= 100
 			},
