@@ -126,7 +126,7 @@ export default {
 	props: {
 		size: {
 			type: Number,
-			default: 20,
+			default: 10,
 			validator: value => {
 				return value >= 10 && value <= 100
 			},
