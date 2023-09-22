@@ -383,10 +383,6 @@ table {
 	}
 }
 
-.snake-app {
-	padding: 10px 0;
-}
-
 .snake {
 	background-color: $gray-primary;
 	position: relative;
