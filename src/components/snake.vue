@@ -72,13 +72,61 @@ const defValue = {
 	dead: false,
 }
 
-const words = ['EXAMPLE', 'SNAKE', 'VUEJS', 'GRID', 'FOOD', 'LETTERS']
+let words = ['SNAKE', 'VUEJS', 'GRID', 'CAR', 'WIDGET', 'DOG', 'CAT']
+
+function hasUniqueLetters(word) {
+	// Convert the word to lowercase to handle case insensitivity
+	word = word.toLowerCase()
+
+	// Create an empty object to keep track of seen letters
+	const seenLetters = {}
+
+	// Iterate through each letter in the word
+	for (let i = 0; i < word.length; i++) {
+		const letter = word[i]
+
+		// If the letter has already been seen, return false
+		if (seenLetters[letter]) {
+			return false
+		}
+
+		// Mark the letter as seen
+		seenLetters[letter] = true
+	}
+
+	// If we've checked all letters and haven't found any doubles, return true
+	return true
+}
+
+fetch('https://word-generator-dbl6lzd3pa-vp.a.run.app/generate', {
+	method: 'POST',
+	headers: {
+		'Content-type': 'application/x-www-form-urlencoded',
+		Authorization: `Basic ${process.env.VUE_APP_AUTH_TOKEN}`,
+	},
+})
+	.then(response => {
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`)
+		}
+
+		if (response.headers.get('content-type').includes('application/json')) {
+			return response.json()
+		} else {
+			return response.text()
+		}
+	})
+	.then(data => {
+		const parsedData = JSON.parse(data)
+		const vaidData = parsedData.filter(word => hasUniqueLetters(word))
+		words = vaidData
+	})
 
 export default {
 	props: {
 		size: {
 			type: Number,
-			default: 40,
+			default: 20,
 			validator: value => {
 				return value >= 10 && value <= 100
 			},
@@ -86,6 +134,7 @@ export default {
 	},
 
 	mounted() {
+		this.start()
 		window.addEventListener('keydown', event => {
 			this.handleUserAction(event.which)
 			event.preventDefault()
@@ -94,7 +143,7 @@ export default {
 
 	data() {
 		return {
-			play: false,
+			play: true,
 			direction: RIGHT,
 			dead: defValue.dead,
 			grid: null,
@@ -219,7 +268,6 @@ export default {
 		},
 
 		setLetter(letter) {
-			console.log('🚀 ~ file: snake.vue:227 ~ setLetter ~ letter:', letter)
 			let tries = 0
 			let cell = Grid.random(this.grid)
 
@@ -267,18 +315,20 @@ $purple: #01cdfe;
 $blue: #05ffa1;
 $lightpurple: #b967ff;
 $darkpurple: #6b3b8e;
+$neonyellow: #ffff00;
 
 .letter {
-	font-family: 'YourVaporwaveFont', sans-serif; // Replace 'YourVaporwaveFont' with the actual font name
-	font-size: 18px;
-	background: linear-gradient(45deg, $pink, $purple, $blue, $lightpurple);
+	font-size: 16px;
+	background: $neonyellow !important;
 	-webkit-background-clip: text;
 	color: $darkpurple; // Dark color for the letter
 	border: 2px solid $lightpurple;
 	padding: 5px 10px;
 	border-radius: 5px;
-	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 5px $neonyellow, 0 0 10px $neonyellow, 0 0 15px $neonyellow, 0 0 20px $neonyellow;
 	transition: all 0.3s ease;
+	text-align: center;
+	font-weight: 700;
 
 	&:hover {
 		background-position: 100%;
@@ -292,12 +342,13 @@ $darkpurple: #6b3b8e;
 
 	.letters {
 		font-size: 24px;
+
 		span {
 			margin: 0 5px;
 			transition: 0.3s;
 
 			&.eaten {
-				color: green;
+				color: green; // Neon green for eaten letters
 			}
 		}
 	}
@@ -312,15 +363,17 @@ table {
 	border-collapse: collapse;
 	overflow: hidden;
 	margin: 20px auto;
+	background-color: $lightpurple; // Light purple for the grid
 }
 
 .grid-cell {
 	margin: 0;
 	padding: 0;
-	height: 20px;
-	width: 20px;
-	background-color: $white-secondary;
-	border: 1px solid $white-primary;
+	height: 25px;
+	width: 25px;
+	background-color: $darkpurple; // Dark purple for each cell
+	border: 1px solid $lightpurple; // Border color for each cell
+	box-sizing: border-box;
 	transition: 0.5s;
 }
 
